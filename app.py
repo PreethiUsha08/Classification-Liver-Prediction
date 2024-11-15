@@ -1,72 +1,53 @@
+import streamlit as st
 import pickle
 import pandas as pd
-import numpy as np
-import streamlit as st
-import xgboost as xgb
 
-# Load the trained XGBoost model from the pickle file
-with open('logistic_regression_model.pkl', 'rb') as file:
-    model = pickle.load(file)
+# Load the trained Logistic Regression model and LabelEncoder
+with open("logistic_regression_model.pkl", "rb") as file:
+    loaded_model = pickle.load(file)
+
 with open("label_encoder.pkl", "rb") as file:
-    label_encoder = pickle.load(file)
+    loaded_label_encoder = pickle.load(file)
 
-# Define a function to make a prediction based on input features
-def predict_disease(age, sex_f,sex_m, albumin, alkaline_phosphatase, alanine_aminotransferase,
-                    aspartate_aminotransferase, bilirubin, cholinesterase, cholesterol,
-                    creatinina, gamma_glutamyl_transferase, protein):
-    """
-    Predicts the disease presence based on input features.
-    Parameters:
-        Various features as arguments.
-    Returns:
-        str: The predicted category (e.g., 'no_disease', 'severe_disease', 'hepatitis', 'fibrosis', 'cirrhosis').
-    """
-    
+# Streamlit app title
+st.title("Disease Category Prediction")
 
-    # Convert input data into a 2D array
-    features = np.array([[age, sex_f,sex_m, albumin, alkaline_phosphatase, alanine_aminotransferase,
-                          aspartate_aminotransferase, bilirubin, cholinesterase, cholesterol,
-                          creatinina, gamma_glutamyl_transferase, protein]])
-    
-    # Use the model to make a prediction
-    prediction = model.predict(features)
-    
-    # Map prediction to disease category
-    disease_mapping = {
-        3: 'No Disease',
-        4: 'Suspect Disease',
-        2: 'Hepatitis',
-        1: 'Fibrosis',
-        0: 'Cirrhosis'
-    }
-    
-    return disease_mapping.get(prediction[0], "Unknown")
+# Collect input data
+st.header("Enter Patient Data")
 
-# Streamlit UI elements
-st.title("Disease Prediction")
-st.write("Enter the following details to predict the disease category:")
-
-# Input fields for user to enter data
-age = st.number_input("Age", min_value=1, max_value=120, value=30)
+age = st.number_input("Age", min_value=0, max_value=120, value=68)
+albumin = st.number_input("Albumin Level", min_value=0.0, value=43.0)
+alkaline_phosphatase = st.number_input("Alkaline Phosphatase", min_value=0.0, value=22.9)
+alanine_aminotransferase = st.number_input("Alanine Aminotransferase", min_value=0.0, value=5.0)
+aspartate_aminotransferase = st.number_input("Aspartate Aminotransferase", min_value=0.0, value=42.1)
+bilirubin = st.number_input("Bilirubin", min_value=0.0, value=12.0)
+cholinesterase = st.number_input("Cholinesterase", min_value=0.0, value=7.29)
+cholesterol = st.number_input("Cholesterol", min_value=0.0, value=4.89)
+creatinina = st.number_input("Creatinine", min_value=0.0, value=80.9)
+gamma_glutamyl_transferase = st.number_input("Gamma Glutamyl Transferase", min_value=0.0, value=11.9)
+protein = st.number_input("Protein", min_value=0.0, value=76.1)
 sex_f = st.radio("Sex", ("Female", "Male")) == "Female"
 sex_m = not sex_f  # True if male, False if female
-albumin = st.number_input("Albumin", min_value=0.0, value=38.5)
-alkaline_phosphatase = st.number_input("Alkaline Phosphatase", min_value=0.0, value=52.5)
-alanine_aminotransferase = st.number_input("Alanine Aminotransferase", min_value=0.0, value=7.7)
-aspartate_aminotransferase = st.number_input("Aspartate Aminotransferase", min_value=0.0, value=22.1)
-bilirubin = st.number_input("Bilirubin", min_value=0.0, value=7.5)
-cholinesterase = st.number_input("Cholinesterase", min_value=0.0, value=6.93)
-cholesterol = st.number_input("Cholesterol", min_value=0.0, value=3.23)
-creatinina = st.number_input("Creatinina", min_value=0, value=106)
-gamma_glutamyl_transferase = st.number_input("Gamma Glutamyl Transferase", min_value=0.0, value=12.1)
-protein = st.number_input("Protein", min_value=0.0, value=69.0)
 
-# Button to trigger prediction
-if st.button("Predict"):
-    # Make prediction
-    result = predict_disease(age, sex_f,sex_m, albumin, alkaline_phosphatase, alanine_aminotransferase,
-                             aspartate_aminotransferase, bilirubin, cholinesterase, cholesterol,
-                             creatinina, gamma_glutamyl_transferase, protein)
-    sample_prediction = label_encoder.inverse_transform(sample_prediction_encoded)
-    # Display result
-    st.success(f"Prediction: {result}")
+# Prepare input data for prediction
+sample_data = pd.DataFrame({
+    'age': [age],
+    'albumin': [albumin],
+    'alkaline_phosphatase': [alkaline_phosphatase],
+    'alanine_aminotransferase': [alanine_aminotransferase],
+    'aspartate_aminotransferase': [aspartate_aminotransferase],
+    'bilirubin': [bilirubin],
+    'cholinesterase': [cholinesterase],
+    'cholesterol': [cholesterol],
+    'creatinina': [creatinina],
+    'gamma_glutamyl_transferase': [gamma_glutamyl_transferase],
+    'protein': [protein],
+    'sex_f': [float(sex_f)],
+    'sex_m': [float(sex_m)]
+})
+
+# Prediction button
+if st.button("Predict Category"):
+    sample_prediction_encoded = loaded_model.predict(sample_data)
+    sample_prediction = loaded_label_encoder.inverse_transform(sample_prediction_encoded)
+    st.subheader(f"Predicted Category: {sample_prediction[0]}")
