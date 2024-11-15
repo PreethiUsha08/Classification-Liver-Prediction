@@ -67,6 +67,6 @@ if st.button("Predict"):
     result = predict_disease(age, sex_f,sex_m, albumin, alkaline_phosphatase, alanine_aminotransferase,
                              aspartate_aminotransferase, bilirubin, cholinesterase, cholesterol,
                              creatinina, gamma_glutamyl_transferase, protein)
-    sample_prediction = loaded_label_encoder.inverse_transform(sample_prediction_encoded)
+    sample_prediction = label_encoder.inverse_transform(sample_prediction_encoded)
     # Display result
     st.success(f"Prediction: {result}")
