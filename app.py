@@ -9,7 +9,7 @@ with open('logistic_regression_model.pkl', 'rb') as file:
     model = pickle.load(file)
 
 # Define a function to make a prediction based on input features
-def predict_disease(age, sex, albumin, alkaline_phosphatase, alanine_aminotransferase,
+def predict_disease(age, sex_f,sex_m, albumin, alkaline_phosphatase, alanine_aminotransferase,
                     aspartate_aminotransferase, bilirubin, cholinesterase, cholesterol,
                     creatinina, gamma_glutamyl_transferase, protein):
     """
@@ -23,7 +23,7 @@ def predict_disease(age, sex, albumin, alkaline_phosphatase, alanine_aminotransf
     sex = 1 if sex == "m" else 0
 
     # Convert input data into a 2D array
-    features = np.array([[age, sex, albumin, alkaline_phosphatase, alanine_aminotransferase,
+    features = np.array([[age, sex_f,sex_m, albumin, alkaline_phosphatase, alanine_aminotransferase,
                           aspartate_aminotransferase, bilirubin, cholinesterase, cholesterol,
                           creatinina, gamma_glutamyl_transferase, protein]])
     
@@ -47,7 +47,8 @@ st.write("Enter the following details to predict the disease category:")
 
 # Input fields for user to enter data
 age = st.number_input("Age", min_value=1, max_value=120, value=30)
-sex = st.selectbox("Sex", ["m", "f"])
+sex_f = st.radio("Sex", ("Female", "Male")) == "Female"
+sex_m = not sex_f  # True if male, False if female
 albumin = st.number_input("Albumin", min_value=0.0, value=38.5)
 alkaline_phosphatase = st.number_input("Alkaline Phosphatase", min_value=0.0, value=52.5)
 alanine_aminotransferase = st.number_input("Alanine Aminotransferase", min_value=0.0, value=7.7)
@@ -62,7 +63,7 @@ protein = st.number_input("Protein", min_value=0.0, value=69.0)
 # Button to trigger prediction
 if st.button("Predict"):
     # Make prediction
-    result = predict_disease(age, sex, albumin, alkaline_phosphatase, alanine_aminotransferase,
+    result = predict_disease(age, sex_f,sex_m, albumin, alkaline_phosphatase, alanine_aminotransferase,
                              aspartate_aminotransferase, bilirubin, cholinesterase, cholesterol,
                              creatinina, gamma_glutamyl_transferase, protein)
     
