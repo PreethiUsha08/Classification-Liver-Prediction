@@ -21,8 +21,7 @@ def predict_disease(age, sex_f,sex_m, albumin, alkaline_phosphatase, alanine_ami
     Returns:
         str: The predicted category (e.g., 'no_disease', 'severe_disease', 'hepatitis', 'fibrosis', 'cirrhosis').
     """
-    # Encode 'sex' as 1 for 'm' and 0 for 'f'
-    sex = 1 if sex == "m" else 0
+    
 
     # Convert input data into a 2D array
     features = np.array([[age, sex_f,sex_m, albumin, alkaline_phosphatase, alanine_aminotransferase,
