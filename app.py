@@ -7,6 +7,8 @@ import xgboost as xgb
 # Load the trained XGBoost model from the pickle file
 with open('logistic_regression_model.pkl', 'rb') as file:
     model = pickle.load(file)
+with open("label_encoder.pkl", "rb") as file:
+    label_encoder = pickle.load(file)
 
 # Define a function to make a prediction based on input features
 def predict_disease(age, sex_f,sex_m, albumin, alkaline_phosphatase, alanine_aminotransferase,
@@ -66,6 +68,6 @@ if st.button("Predict"):
     result = predict_disease(age, sex_f,sex_m, albumin, alkaline_phosphatase, alanine_aminotransferase,
                              aspartate_aminotransferase, bilirubin, cholinesterase, cholesterol,
                              creatinina, gamma_glutamyl_transferase, protein)
-    
+    sample_prediction = loaded_label_encoder.inverse_transform(sample_prediction_encoded)
     # Display result
     st.success(f"Prediction: {result}")
