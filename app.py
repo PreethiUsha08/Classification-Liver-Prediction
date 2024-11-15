@@ -32,11 +32,11 @@ def predict_disease(age, sex_f,sex_m, albumin, alkaline_phosphatase, alanine_ami
     
     # Map prediction to disease category
     disease_mapping = {
-        0: 'No Disease',
-        1: 'Suspect Disease',
+        3: 'No Disease',
+        4: 'Suspect Disease',
         2: 'Hepatitis',
-        3: 'Fibrosis',
-        4: 'Cirrhosis'
+        1: 'Fibrosis',
+        0: 'Cirrhosis'
     }
     
     return disease_mapping.get(prediction[0], "Unknown")
